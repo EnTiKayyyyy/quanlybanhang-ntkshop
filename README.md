@@ -1,73 +1,119 @@
-# React + TypeScript + Vite
+# Quản lý EnTiKayShop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for managing product inventory, expiry dates, and customer information. Built with **React**, **TypeScript**, **Vite**, **Tailwind CSS**, and **Firebase Firestore**.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Product CRUD** – Add, edit, delete products with optimistic UI updates.
+- **Product type management** – Inline editing of product categories, cached for 60 seconds.
+- **Expiry tracking** – Visual status badges (safe, warning, expired) and remaining days counter.
+- **Advanced filtering** – Search by name, customer, description, source; filter by status and product type; optional "expiring soon" toggle.
+- **Detailed product dialog** – Shows all fields (name, type, description, source, customer info, sold/expiry dates, remaining days, notes, batch number) with colorful sections.
+- **Responsive design** – Works on desktop and mobile, with loading skeletons for better UX.
+- **Beautiful UI** – Gradient buttons, hover effects, custom dialogs, and consistent styling.
 
-## React Compiler
+## 📦 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React** with hooks & context API
+- **TypeScript**
+- **Vite** – Fast dev server & bundler
+- **Tailwind CSS** – Utility‑first styling
+- **Firebase Firestore** – Cloud database
+- **lucide‑react** – Icon set
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (>= 18)
+- npm or pnpm
+- A Firebase project with Firestore enabled
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd "Quản Lý"
+
+# Install dependencies
+npm install   # or pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Environment variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env` file in the project root (it is already ignored by `.gitignore`):
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 ```
+
+### Development
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+### Build for production
+
+```bash
+npm run build
+npm run preview   # preview the built app locally
+```
+
+## 📂 Project Structure
+
+```
+src/
+├─ components/               # Reusable UI components (Button, Dialog, etc.)
+│   ├─ ui/                   # Tailwind UI primitives
+│   ├─ ProductForm.tsx       # Form for adding/editing a product
+│   └─ ProductDetailDialog.tsx  # Detailed product view dialog
+├─ contexts/                 # React Contexts (Products, ProductTypes) with caching & optimistic updates
+├─ pages/                    # Page components (Dashboard, Products, ProductTypes)
+├─ services/                 # Firebase CRUD functions (db.ts)
+├─ lib/                      # Utility helpers (export, utils)
+├─ index.css                 # Global Tailwind imports
+└─ App.tsx                   # Root component with routing and providers
+```
+
+## 🛠️ Scripts
+
+- `npm run dev` – Start the development server.
+- `npm run build` – Build the production bundle.
+- `npm run preview` – Preview the production build locally.
+
+## 📦 Deployment
+
+The app can be deployed to any static‑hosting platform (Vercel, Netlify, Firebase Hosting, etc.). Example for Firebase Hosting:
+
+```bash
+npm run build
+firebase login
+firebase init hosting   # select the "dist" folder
+firebase deploy
+```
+
+## 🤝 Contributing
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/awesome-feature`).
+3. Commit your changes and push to your fork.
+4. Open a Pull Request.
+
+Please run `npm run lint` and ensure the code follows existing linting rules before submitting.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+*Enjoy managing your inventory with **Quản lý EnTiKayShop**!*

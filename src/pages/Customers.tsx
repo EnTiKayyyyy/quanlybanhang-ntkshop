@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Search, Edit, Trash2, Phone, Download } from "lucide-react";
+import { Plus, Search, Edit, Trash2, Download } from "lucide-react";
 import { getCustomers, addCustomer, updateCustomer, deleteCustomer } from "@/services/db";
 import type { Customer } from "@/types";
 import { Button } from "@/components/ui/button";

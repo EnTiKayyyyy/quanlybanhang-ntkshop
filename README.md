@@ -1,4 +1,4 @@
-# Quản lý EnTiKayShop
+# EnTiKayShop Management
 
 A modern web application for managing product inventory, expiry dates, and customer information. Built with **React**, **TypeScript**, **Vite**, **Tailwind CSS**, and **Firebase Firestore**.
 
@@ -116,4 +116,4 @@ This project is licensed under the MIT License.
 
 ---
 
-*Enjoy managing your inventory with **Quản lý EnTiKayShop**!*
+*Enjoy managing your inventory with **EnTiKayShop Management**!*

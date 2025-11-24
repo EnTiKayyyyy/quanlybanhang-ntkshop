@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Products from "@/pages/Products";
 import Dashboard from "@/pages/Dashboard";
@@ -9,7 +9,7 @@ import { ProductTypesProvider } from "@/contexts/ProductTypesContext";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ProductsProvider>
         <ProductTypesProvider>
           <Routes>
@@ -22,7 +22,7 @@ function App() {
           <Toaster />
         </ProductTypesProvider>
       </ProductsProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

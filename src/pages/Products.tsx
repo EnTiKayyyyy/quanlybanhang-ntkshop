@@ -151,7 +151,8 @@ export default function Products() {
             p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (p.customerInfo || p.customerName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
             (p.description || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (p.source || "").toLowerCase().includes(searchTerm.toLowerCase());
+            (p.source || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (p.notes || "").toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesStatus = filterStatus === "all" || p.status === filterStatus;
 
@@ -184,7 +185,7 @@ export default function Products() {
         switch (status) {
             case 'safe': return 'An toàn';
             case 'warning': return 'Sắp hết hạn';
-            case 'expired': return 'Hết hạn / Nguy cấp';
+            case 'expired': return 'Hết hạn';
             default: return '';
         }
     };
@@ -300,59 +301,61 @@ export default function Products() {
             ) : (
                 <div className="space-y-4">
                     {/* Desktop Table View */}
-                    <div className="hidden md:block border rounded-lg overflow-hidden">
-                        <table className="w-full text-sm text-left">
+                    <div className="hidden md:block border rounded-lg overflow-x-auto">
+                        <table className="w-full text-sm text-left table-fixed">
                             <thead className="bg-muted text-muted-foreground font-medium">
                                 <tr>
-                                    <th className="px-4 py-3">Loại sản phẩm</th>
-                                    <th className="px-4 py-3">Mô tả</th>
-                                    <th className="px-4 py-3">Nơi nhập hàng</th>
-                                    <th className="px-4 py-3">Khách hàng</th>
-                                    <th className="px-4 py-3">Ghi chú</th>
-                                    <th className="px-4 py-3">Ngày hết hạn</th>
-                                    <th className="px-4 py-3">Còn lại</th>
-                                    <th className="px-4 py-3">Trạng thái</th>
-                                    <th className="px-4 py-3 text-right">Thao tác</th>
+                                    <th className="px-3 py-3 w-[10%]">Loại sản phẩm</th>
+                                    <th className="px-3 py-3 w-[12%]">Mô tả</th>
+                                    <th className="px-3 py-3 w-[12%]">Nơi nhập hàng</th>
+                                    <th className="px-3 py-3 w-[12%]">Khách hàng</th>
+                                    <th className="px-3 py-3 w-[12%]">Ghi chú</th>
+                                    <th className="px-3 py-3 w-[10%]">Ngày hết hạn</th>
+                                    <th className="px-3 py-3 w-[8%]">Còn lại</th>
+                                    <th className="px-3 py-3 w-[12%]">Trạng thái</th>
+                                    <th className="px-3 py-3 w-[12%] text-right">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y">
                                 {filteredProducts.map((product) => (
                                     <tr key={product.id} className="bg-card hover:bg-accent/50 transition-colors">
-                                        <td className="px-4 py-3 font-medium">
-                                            {product.type}
+                                        <td className="px-3 py-3 font-medium">
+                                            <div className="truncate" title={product.type}>
+                                                {product.type}
+                                            </div>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <div className="max-w-xs truncate text-sm text-muted-foreground" title={product.description}>
+                                        <td className="px-3 py-3">
+                                            <div className="truncate text-sm text-muted-foreground" title={product.description}>
                                                 {product.description || "-"}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <div className="max-w-xs truncate text-sm" title={product.source}>
+                                        <td className="px-3 py-3">
+                                            <div className="truncate text-sm" title={product.source}>
                                                 {product.source || "-"}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <div className="max-w-xs truncate" title={product.customerInfo || product.customerName}>
+                                        <td className="px-3 py-3">
+                                            <div className="truncate" title={product.customerInfo || product.customerName}>
                                                 {product.customerInfo || product.customerName || "-"}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <div className="max-w-xs truncate text-sm text-muted-foreground" title={product.notes}>
+                                        <td className="px-3 py-3">
+                                            <div className="truncate text-sm text-muted-foreground" title={product.notes}>
                                                 {product.notes || "-"}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3">{format(product.expiryDate, "dd/MM/yyyy")}</td>
-                                        <td className="px-4 py-3 font-bold">
+                                        <td className="px-3 py-3 whitespace-nowrap">{format(product.expiryDate, "dd/MM/yyyy")}</td>
+                                        <td className="px-3 py-3 font-bold whitespace-nowrap">
                                             {product.daysRemaining} ngày
                                         </td>
-                                        <td className="px-4 py-3">
-                                            <span className={cn("inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border", getStatusColor(product.status))}>
+                                        <td className="px-3 py-3">
+                                            <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border whitespace-nowrap", getStatusColor(product.status))}>
                                                 {getStatusIcon(product.status)}
                                                 {getStatusText(product.status)}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-3 text-right">
-                                            <div className="flex justify-end gap-2">
+                                        <td className="px-3 py-3 text-right">
+                                            <div className="flex justify-end gap-1">
                                                 <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => handleViewDetail(product)}>
                                                     <Eye className="h-4 w-4" />
                                                 </Button>

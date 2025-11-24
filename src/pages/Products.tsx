@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Search, AlertTriangle, CheckCircle, XCircle, Edit, Trash2, Download, Eye } from "lucide-react";
+import { useState, useRef } from "react";
+import { Plus, Search, AlertTriangle, CheckCircle, XCircle, Edit, Trash2, Download, Eye, FileSpreadsheet, Upload } from "lucide-react";
 import type { Product, ProductWithStatus } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,13 +14,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { exportToCSV } from "@/lib/export";
+import { exportToCSV, exportExcelTemplate, importProductsFromExcel } from "@/lib/export";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useProductTypes } from "@/contexts/ProductTypesContext";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Products() {
     const { products, loading, addProductOptimistic, updateProductOptimistic, deleteProductOptimistic } = useProducts();
     const { productTypes } = useProductTypes();
+    const { toast } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState<string>("all");
     const [filterType, setFilterType] = useState<string>("all");
@@ -29,6 +31,8 @@ export default function Products() {
     const [showExpiringOnly, setShowExpiringOnly] = useState(false);
     const [detailProduct, setDetailProduct] = useState<ProductWithStatus | null>(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [isImporting, setIsImporting] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleAddProduct = async (data: any) => {
         try {
@@ -79,6 +83,67 @@ export default function Products() {
     const handleViewDetail = (product: ProductWithStatus) => {
         setDetailProduct(product);
         setIsDetailOpen(true);
+    };
+
+    const handleDownloadTemplate = () => {
+        exportExcelTemplate();
+        toast({
+            title: "Thành công",
+            description: "Đã tải file mẫu thành công",
+        });
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        // Reset input
+        event.target.value = '';
+
+        if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+            toast({
+                title: "Lỗi",
+                description: "Vui lòng chọn file Excel (.xlsx hoặc .xls)",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        setIsImporting(true);
+        try {
+            const productsData = await importProductsFromExcel(file);
+            
+            // Add all products
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const productData of productsData) {
+                try {
+                    await addProductOptimistic(productData);
+                    successCount++;
+                } catch (error) {
+                    console.error("Failed to add product:", error);
+                    errorCount++;
+                }
+            }
+
+            toast({
+                title: "Hoàn thành nhập dữ liệu",
+                description: `Đã nhập thành công ${successCount} sản phẩm${errorCount > 0 ? `, ${errorCount} sản phẩm lỗi` : ''}`,
+            });
+        } catch (error: any) {
+            toast({
+                title: "Lỗi nhập file",
+                description: error.message || "Không thể đọc file Excel",
+                variant: "destructive",
+            });
+        } finally {
+            setIsImporting(false);
+        }
     };
 
     const filteredProducts = products.filter(p => {
@@ -136,6 +201,21 @@ export default function Products() {
                         <AlertTriangle className="h-4 w-4 mr-2" />
                         {showExpiringOnly ? "Đang lọc: Sắp hết hạn" : "Lọc Sắp Hết Hạn"}
                     </Button>
+                    <Button variant="outline" onClick={handleDownloadTemplate}>
+                        <FileSpreadsheet className="h-4 w-4 mr-2" />
+                        Tải mẫu Excel
+                    </Button>
+                    <Button variant="outline" onClick={handleImportClick} disabled={isImporting}>
+                        <Upload className="h-4 w-4 mr-2" />
+                        {isImporting ? "Đang nhập..." : "Nhập Excel"}
+                    </Button>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".xlsx,.xls"
+                        onChange={handleFileChange}
+                        className="hidden"
+                    />
                     <Button variant="success" onClick={handleExport}>
                         <Download className="h-4 w-4 mr-2" />
                         Xuất Excel

@@ -143,13 +143,13 @@ const enrichProduct = (product: Product): ProductWithStatus => {
     const daysRemaining = differenceInDays(expiry, today);
 
     let status: ExpiryStatus = 'safe';
-    if (daysRemaining <= 7) {
+    if (daysRemaining <= 3) {
         status = daysRemaining < 0 ? 'expired' : 'warning'; // Actually requirement says <= 7 is red.
         // Wait, requirement:
         // Green: > 30
         // Yellow: 7-30
         // Red: <= 7 or expired
-    } else if (daysRemaining <= 30) {
+    } else if (daysRemaining <= 15) {
         status = 'warning';
     }
 
@@ -157,10 +157,10 @@ const enrichProduct = (product: Product): ProductWithStatus => {
     // Red: <= 7
     // Yellow: 7-30 (Exclusive of 7? "7-30" usually implies range. If <=7 is red, then 8-30 is yellow)
     // Let's refine:
-    if (daysRemaining <= 7) {
+    if (daysRemaining <= 3) {
         status = 'expired'; // Using 'expired' to mean "Critical/Red" as per UI requirement, though logic might distinguish actual expired.
         // Let's stick to the type 'safe' | 'warning' | 'expired' but map 'expired' to Red color which covers <=7.
-    } else if (daysRemaining <= 30) {
+    } else if (daysRemaining <= 15) {
         status = 'warning';
     } else {
         status = 'safe';

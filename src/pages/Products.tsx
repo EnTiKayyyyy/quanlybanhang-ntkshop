@@ -88,8 +88,9 @@ export default function Products() {
     const handleDownloadTemplate = () => {
         exportExcelTemplate();
         toast({
-            title: "Thành công",
+            title: "✅ Thành công",
             description: "Đã tải file mẫu thành công",
+            className: "border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50",
         });
     };
 
@@ -106,9 +107,9 @@ export default function Products() {
 
         if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
             toast({
-                title: "Lỗi",
+                title: "❌ Lỗi",
                 description: "Vui lòng chọn file Excel (.xlsx hoặc .xls)",
-                variant: "destructive",
+                className: "border-red-200 bg-gradient-to-r from-red-50 to-orange-50",
             });
             return;
         }
@@ -132,14 +133,15 @@ export default function Products() {
             }
 
             toast({
-                title: "Hoàn thành nhập dữ liệu",
+                title: "✅ Hoàn thành nhập dữ liệu",
                 description: `Đã nhập thành công ${successCount} sản phẩm${errorCount > 0 ? `, ${errorCount} sản phẩm lỗi` : ''}`,
+                className: "border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50",
             });
         } catch (error: any) {
             toast({
-                title: "Lỗi nhập file",
+                title: "❌ Lỗi nhập file",
                 description: error.message || "Không thể đọc file Excel",
-                variant: "destructive",
+                className: "border-red-200 bg-gradient-to-r from-red-50 to-orange-50",
             });
         } finally {
             setIsImporting(false);

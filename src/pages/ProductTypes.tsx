@@ -28,15 +28,16 @@ export default function ProductTypes() {
             await addProductTypeOptimistic(newTypeName.trim());
             setNewTypeName("");
             toast({
-                title: "Thành công",
+                title: "✅ Thành công",
                 description: "Đã thêm loại sản phẩm mới.",
+                className: "border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50",
             });
         } catch (error) {
             console.error("Failed to add product type", error);
             toast({
-                title: "Lỗi",
+                title: "❌ Lỗi",
                 description: "Không thể thêm loại sản phẩm.",
-                variant: "destructive",
+                className: "border-red-200 bg-gradient-to-r from-red-50 to-orange-50",
             });
         }
     };
@@ -59,15 +60,16 @@ export default function ProductTypes() {
             setEditingId(null);
             setEditingName("");
             toast({
-                title: "Thành công",
+                title: "✅ Thành công",
                 description: "Đã cập nhật loại sản phẩm.",
+                className: "border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50",
             });
         } catch (error) {
             console.error("Failed to update product type", error);
             toast({
-                title: "Lỗi",
+                title: "❌ Lỗi",
                 description: "Không thể cập nhật loại sản phẩm.",
-                variant: "destructive",
+                className: "border-red-200 bg-gradient-to-r from-red-50 to-orange-50",
             });
         }
     };
@@ -78,15 +80,16 @@ export default function ProductTypes() {
         try {
             await deleteProductTypeOptimistic(id);
             toast({
-                title: "Thành công",
+                title: "✅ Thành công",
                 description: "Đã xoá loại sản phẩm.",
+                className: "border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50",
             });
         } catch (error) {
             console.error("Failed to delete product type", error);
             toast({
-                title: "Lỗi",
+                title: "❌ Lỗi",
                 description: "Không thể xoá loại sản phẩm.",
-                variant: "destructive",
+                className: "border-red-200 bg-gradient-to-r from-red-50 to-orange-50",
             });
         }
     };

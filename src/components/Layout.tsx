@@ -21,9 +21,9 @@ export default function Layout() {
 
             if (expiringCount > 0) {
                 toast({
-                    title: "Cảnh báo hạn sử dụng",
-                    description: `Có ${expiringCount} sản phẩm sắp hết hạn hoặc đã hết hạn!`,
-                    variant: "destructive",
+                    title: "⚠️ Cảnh báo hạn sử dụng",
+                    description: `Có ${expiringCount} sản phẩm cần chú ý ngay! Vui lòng kiểm tra.`,
+                    className: "border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50",
                 });
             }
         } catch (error) {

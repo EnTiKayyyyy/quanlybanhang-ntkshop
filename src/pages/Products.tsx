@@ -225,6 +225,7 @@ export default function Products() {
                             <thead className="bg-muted text-muted-foreground font-medium">
                                 <tr>
                                     <th className="px-4 py-3">Loại sản phẩm</th>
+                                    <th className="px-4 py-3">Mô tả</th>
                                     <th className="px-4 py-3">Nơi nhập hàng</th>
                                     <th className="px-4 py-3">Khách hàng</th>
                                     <th className="px-4 py-3">Ghi chú</th>
@@ -239,6 +240,11 @@ export default function Products() {
                                     <tr key={product.id} className="bg-card hover:bg-accent/50 transition-colors">
                                         <td className="px-4 py-3 font-medium">
                                             {product.type}
+                                        </td>
+                                        <td className="px-4 py-3">
+                                            <div className="max-w-xs truncate text-sm text-muted-foreground" title={product.description}>
+                                                {product.description || "-"}
+                                            </div>
                                         </td>
                                         <td className="px-4 py-3">
                                             <div className="max-w-xs truncate text-sm" title={product.source}>
@@ -306,6 +312,7 @@ export default function Products() {
 
                                 <div className="space-y-1 text-sm">
                                     <p><span className="font-semibold">Nơi nhập:</span> {product.source || "-"}</p>
+                                    <p><span className="font-semibold">Mô tả:</span> {product.description || "-"}</p>
                                     <p><span className="font-semibold">Khách:</span> {product.customerInfo || product.customerName || "-"}</p>
                                     <p><span className="font-semibold">Ghi chú:</span> {product.notes || "-"}</p>
                                     <p><span className="font-semibold">Hết hạn:</span> {format(product.expiryDate, "dd/MM/yyyy")}</p>

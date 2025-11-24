@@ -35,7 +35,15 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
             setLoading(true);
             setError(null);
             const data = await getProducts();
-            setProducts(data);
+
+            // Ensure every product has a `description` property.
+            // Some records may use `details` instead of `description` in the DB.
+            const enriched = data.map(p => ({
+                ...p,
+                description: (p as any).description ?? (p as any).details ?? '',
+            })) as ProductWithStatus[];
+
+            setProducts(enriched);
             setLastFetch(now);
         } catch (err) {
             console.error('Failed to load products', err);
@@ -66,7 +74,15 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
         // Optimistic update
         const oldProducts = [...products];
         setProducts(prev =>
-            prev.map(p => p.id === id ? { ...p, ...data } as ProductWithStatus : p)
+            prev.map(p =>
+                p.id === id
+                    ? ({
+                          ...p,
+                          ...data,
+                          description: (data as any).description ?? p.description ?? (p as any).details ?? '',
+                      } as ProductWithStatus)
+                    : p
+            )
         );
 
         try {

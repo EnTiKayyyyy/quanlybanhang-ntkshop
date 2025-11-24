@@ -1,18 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Package, AlertTriangle, XCircle, ArrowRight, TrendingUp, Clock } from "lucide-react";
-import type { ProductWithStatus } from "@/types";
+import { Package, AlertTriangle, XCircle, ArrowRight, TrendingUp, Clock, Eye, Edit } from "lucide-react";
+import type { Product, ProductWithStatus } from "@/types";
 import { format } from "date-fns";
 import { useProducts } from "@/contexts/ProductsContext";
+import { ProductDetailDialog } from "@/components/ProductDetailDialog";
+import { ProductForm } from "@/components/ProductForm";
+import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
-    const { products, loading } = useProducts();
+    const { products, loading, updateProductOptimistic } = useProducts();
     const [stats, setStats] = useState({
         totalProducts: 0,
         expiringSoon: 0,
         expired: 0,
     });
     const [expiringProducts, setExpiringProducts] = useState<ProductWithStatus[]>([]);
+    const [detailProduct, setDetailProduct] = useState<ProductWithStatus | null>(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [isFormOpen, setIsFormOpen] = useState(false);
 
     useEffect(() => {
         if (!loading && products.length > 0) {
@@ -28,6 +35,28 @@ export default function Dashboard() {
             setExpiringProducts(critical.slice(0, 5));
         }
     }, [products, loading]);
+
+    const handleViewDetail = (product: ProductWithStatus) => {
+        setDetailProduct(product);
+        setIsDetailOpen(true);
+    };
+
+    const handleEdit = (product: Product) => {
+        setEditingProduct(product);
+        setIsFormOpen(true);
+    };
+
+    const handleUpdateProduct = async (data: any) => {
+        if (!editingProduct) return;
+        try {
+            await updateProductOptimistic(editingProduct.id, data);
+            setEditingProduct(null);
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error("Failed to save product", error);
+            alert("Có lỗi xảy ra khi lưu sản phẩm.");
+        }
+    };
 
     return (
         <div className="space-y-8">
@@ -132,25 +161,45 @@ export default function Dashboard() {
                             expiringProducts.map(product => (
                                 <div
                                     key={product.id}
-                                    className="flex items-center justify-between p-4 rounded-xl border border-red-100 bg-gradient-to-r from-red-50/50 to-orange-50/50 hover:shadow-md transition-all card-hover"
+                                    className="flex items-center justify-between p-4 rounded-xl border border-red-100 bg-gradient-to-r from-red-50/50 to-orange-50/50 hover:shadow-md transition-all group"
                                 >
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3">
                                             <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                                             <div>
-                                                <div className="font-semibold text-gray-900">{product.name}</div>
+                                                <div className="font-semibold text-gray-900">{product.type}</div>
                                                 <div className="text-sm text-muted-foreground mt-0.5">
                                                     {product.customerInfo || product.customerName || 'Khách lẻ'}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="text-right ml-4">
-                                        <div className="text-2xl font-bold text-red-600">
-                                            {product.daysRemaining}
+                                    <div className="flex items-center gap-3">
+                                        <div className="text-right">
+                                            <div className="text-2xl font-bold text-red-600">
+                                                {product.daysRemaining}
+                                            </div>
+                                            <div className="text-xs text-red-500 font-medium">
+                                                {product.daysRemaining === 0 ? 'Hôm nay' : 'ngày'}
+                                            </div>
                                         </div>
-                                        <div className="text-xs text-red-500 font-medium">
-                                            {product.daysRemaining === 0 ? 'Hôm nay' : 'ngày'}
+                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon" 
+                                                className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                onClick={() => handleViewDetail(product)}
+                                            >
+                                                <Eye className="h-4 w-4" />
+                                            </Button>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="icon" 
+                                                className="h-8 w-8 hover:bg-purple-50"
+                                                onClick={() => handleEdit(product)}
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -159,6 +208,22 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
+
+            <ProductDetailDialog
+                product={detailProduct}
+                open={isDetailOpen}
+                onOpenChange={setIsDetailOpen}
+            />
+
+            <ProductForm
+                open={isFormOpen}
+                onOpenChange={(open) => {
+                    setIsFormOpen(open);
+                    if (!open) setEditingProduct(null);
+                }}
+                onSubmit={handleUpdateProduct}
+                initialData={editingProduct}
+            />
         </div>
     );
 }
